@@ -8,6 +8,7 @@ class BackendCartApplicationTests {
 
 	@Test
 	fun contextLoads() {
+		main(emptyArray())
 	}
 
 }
