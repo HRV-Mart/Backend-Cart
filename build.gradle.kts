@@ -38,10 +38,32 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	// To run Jacoco Test Coverage Verification
+	finalizedBy("jacocoTestCoverageVerification")
 }
 /*
 * detekt configs*/
 detekt {
 	toolVersion = "1.22.0"
 	config = files("config/detekt/detekt.yml")
+}
+/*
+* Jacoco configs*/
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			excludes = listOf(
+				"com.hrv.mart.user.repository.UserRepository.kt.*"
+			)
+			limit {
+				minimum = "0.9".toBigDecimal()
+			}
+		}
+	}
+}
+tasks.jacocoTestReport{
+	reports {
+		html.required.set(true)
+		generate()
+	}
 }
