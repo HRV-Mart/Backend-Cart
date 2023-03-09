@@ -36,11 +36,11 @@ class CartService (
                     Mono.just("Product not found")
                 }
             }
-    fun deleteProductFromCart(cart: Cart) =
-        cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
+    fun deleteProductFromCart(userId: String, productId: String) =
+        cartRepository.existsByUserIdAndProductId(userId, productId)
             .flatMap {
                 if (it) {
-                    cartRepository.deleteByUserIdAndProductId(cart.userId, cart.productId)
+                    cartRepository.deleteByUserIdAndProductId(userId, productId)
                         .then(Mono.just("Product removed from cart"))
                 }
                 else {
