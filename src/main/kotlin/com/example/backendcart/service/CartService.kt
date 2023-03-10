@@ -23,7 +23,7 @@ class CartService (
             }
             .onErrorResume {
                 response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR
-                Mono.just("Product already exist cart")
+                Mono.just("Product already exist in cart")
             }
     fun getProductQuantityInCart(userId: String, productId:String) =
         cartRepository.findByUserIdAndProductId(userId, productId)
