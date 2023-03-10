@@ -3,6 +3,7 @@ package com.example.backendcart.controller
 import com.example.backendcart.model.Cart
 import com.example.backendcart.service.CartService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -13,21 +14,44 @@ class CartController (
 )
 {
     @PostMapping
-    fun addProductInCart(@RequestBody cart: Cart) =
-        cartService.addProductToCart(cart)
+    fun addProductInCart(@RequestBody cart: Cart, response: ServerHttpResponse) =
+        cartService.addProductToCart(cart, response)
     @GetMapping("/{userId}/{productId}")
-    fun getProductQuantityInCart(@PathVariable productId: String, @PathVariable userId: String) =
+    fun getProductQuantityInCart(
+        @PathVariable productId: String,
+        @PathVariable userId: String
+    ) =
         cartService.getProductQuantityInCart(userId, productId)
     @GetMapping("/{userId}")
-    fun getUserCart(@PathVariable userId: String) =
-        cartService.getUserCart(userId)
+    fun getUserCart(
+        @PathVariable userId: String,
+        response: ServerHttpResponse
+    ) =
+        cartService.getUserCart(userId, response)
     @PutMapping
-    fun updateProductQuantity(@RequestBody cart: Cart) =
-        cartService.updateProductQuantity(cart)
+    fun updateProductQuantity(
+        @RequestBody cart: Cart,
+        response: ServerHttpResponse
+    ) =
+        cartService.updateProductQuantity(cart, response)
     @DeleteMapping("/{userId}/{productId}")
-    fun deleteProductFromCart(@PathVariable productId: String, @PathVariable userId: String) =
-        cartService.deleteProductFromCart(userId, productId)
+    fun deleteProductFromCart(
+        @PathVariable productId: String,
+        @PathVariable userId: String,
+        response: ServerHttpResponse
+    ) =
+        cartService.deleteProductFromCart(
+            userId,
+            productId,
+            response
+        )
     @DeleteMapping("/{userId}")
-    fun emptyCart(@PathVariable userId: String) =
-        cartService.emptyUserCart(userId)
+    fun emptyCart(
+        @PathVariable userId: String,
+        response: ServerHttpResponse
+    ) =
+        cartService.emptyUserCart(
+            userId,
+            response
+        )
 }
