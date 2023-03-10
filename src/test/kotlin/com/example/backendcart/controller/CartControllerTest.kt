@@ -30,4 +30,13 @@ class CartControllerTest {
             .expectNext("Product added to cart")
             .verifyComplete()
     }
+    @Test
+    fun `should not add product in cart if it is present in cart`() {
+        doReturn(Mono.error<Exception>(Exception("Product already exist in cart")))
+            .`when`(cartRepository)
+            .insert(cart)
+        StepVerifier.create(cartController.addProductInCart(cart, response))
+            .expectNext("Product already exist in cart")
+            .verifyComplete()
+    }
 }
