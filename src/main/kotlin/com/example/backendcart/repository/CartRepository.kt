@@ -11,6 +11,7 @@ interface CartRepository : ReactiveMongoRepository<Cart, String> {
     fun findByUserId(userId: String): Flux<Cart>
     fun findByUserIdAndProductId(userId: String, productId: String): Mono<Cart>
     fun existsByUserIdAndProductId(userId: String, productId: String): Mono<Boolean>
+    fun existsByUserId(userId: String): Mono<Boolean>
     fun deleteByUserIdAndProductId(userId: String, productId: String): Mono<Void>
     fun deleteByUserId(userId: String): Flux<Void>
 }
