@@ -1,12 +1,13 @@
 package com.example.backendcart.service
 
+import com.example.backendcart.fixture.Pageable
 import com.example.backendcart.model.Cart
 import com.example.backendcart.repository.CartRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
@@ -31,10 +32,22 @@ class CartService (
                 it.quantity
             }
             .defaultIfEmpty(0)
-    fun getUserCart(userId: String, response: ServerHttpResponse) =
-        cartRepository.findByUserId(userId)
-            .switchIfEmpty {
-                response.statusCode = HttpStatus.NOT_FOUND
+    fun getUserCart(userId: String, pageRequest: PageRequest) =
+        cartRepository.countByUserId(userId)
+            .flatMap { totalSize->
+                cartRepository.findByUserId(userId, pageRequest)
+                    .collectList()
+                    .map { data->
+                        Pageable<Cart>(
+                            data = data,
+                            size = pageRequest.pageSize.toLong(),
+                            nextPage = Pageable.getNextPage(
+                                pageSize = pageRequest.pageSize.toLong(),
+                                page = pageRequest.pageNumber.toLong(),
+                                totalSize = totalSize
+                            )
+                        )
+                    }
             }
     fun updateProductQuantity(cart: Cart, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
