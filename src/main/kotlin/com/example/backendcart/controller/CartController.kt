@@ -1,6 +1,5 @@
 package com.example.backendcart.controller
 
-import com.example.backendcart.fixture.CustomPageRequest
 import com.example.backendcart.model.Cart
 import com.example.backendcart.service.CartService
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,15 +24,8 @@ class CartController (
     ) =
         cartService.getProductQuantityInCart(userId, productId)
     @GetMapping("/{userId}")
-    fun getUserCart(
-        @PathVariable userId: String,
-        @RequestParam size: Optional<Int>,
-        @RequestParam page: Optional<Int>
-    ) =
-        cartService.getUserCart(userId, CustomPageRequest.getPageRequest(
-            optionalSize = size,
-            optionalPage = page
-        ))
+    fun getUserCart(@PathVariable userId: String) =
+        cartService.getUserCart(userId)
     @PutMapping
     fun updateProductQuantity(
         @RequestBody cart: Cart,
