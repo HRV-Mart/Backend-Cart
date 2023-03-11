@@ -32,6 +32,9 @@ class CartService (
             .defaultIfEmpty(0)
     fun getUserCart(userId: String) =
         cartRepository.findByUserId(userId)
+            .map {
+                it.productId
+            }
     fun updateProductQuantity(cart: Cart, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
             .flatMap {
