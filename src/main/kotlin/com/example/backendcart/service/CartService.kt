@@ -32,23 +32,8 @@ class CartService (
                 it.quantity
             }
             .defaultIfEmpty(0)
-    fun getUserCart(userId: String, pageRequest: PageRequest) =
-        cartRepository.countByUserId(userId)
-            .flatMap { totalSize->
-                cartRepository.findByUserId(userId, pageRequest)
-                    .collectList()
-                    .map { data->
-                        Pageable<Cart>(
-                            data = data,
-                            size = pageRequest.pageSize.toLong(),
-                            nextPage = Pageable.getNextPage(
-                                pageSize = pageRequest.pageSize.toLong(),
-                                page = pageRequest.pageNumber.toLong(),
-                                totalSize = totalSize
-                            )
-                        )
-                    }
-            }
+    fun getUserCart(userId: String) =
+        cartRepository.findByUserId(userId)
     fun updateProductQuantity(cart: Cart, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
             .flatMap {

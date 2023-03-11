@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 
 @Repository
 interface CartRepository : ReactiveMongoRepository<Cart, String> {
-    fun findByUserId(userId: String, pageRequest: PageRequest): Flux<Cart>
+    fun findByUserId(userId: String): Flux<Cart>
     fun findByUserIdAndProductId(userId: String, productId: String): Mono<Cart>
     fun countByUserId(userId: String): Mono<Long>
     fun existsByUserIdAndProductId(userId: String, productId: String): Mono<Boolean>

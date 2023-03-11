@@ -27,14 +27,9 @@ class CartController (
     @GetMapping("/{userId}")
     fun getUserCart(
         @PathVariable userId: String,
-        @RequestParam size: Optional<Int>,
-        @RequestParam page: Optional<Int>,
         response: ServerHttpResponse
     ) =
-        cartService.getUserCart(userId, CustomPageRequest.getPageRequest(
-            optionalSize = size,
-            optionalPage = page
-        ))
+        cartService.getUserCart(userId)
     @PutMapping
     fun updateProductQuantity(
         @RequestBody cart: Cart,
