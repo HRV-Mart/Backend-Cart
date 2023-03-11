@@ -28,8 +28,7 @@ class CartController (
     fun getUserCart(
         @PathVariable userId: String,
         @RequestParam size: Optional<Int>,
-        @RequestParam page: Optional<Int>,
-        response: ServerHttpResponse
+        @RequestParam page: Optional<Int>
     ) =
         cartService.getUserCart(userId, CustomPageRequest.getPageRequest(
             optionalSize = size,
