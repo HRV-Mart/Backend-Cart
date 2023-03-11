@@ -1,10 +1,8 @@
 package com.example.backendcart.service
 
-import com.example.backendcart.fixture.Pageable
 import com.example.backendcart.model.Cart
 import com.example.backendcart.repository.CartRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.stereotype.Service
@@ -26,7 +24,7 @@ class CartService (
                 response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR
                 Mono.just("Product already exist cart")
             }
-    fun getProductQuantityInCart(userId: String, productId:String) =
+    fun getProductQuantityInCart(userId: String, productId: String) =
         cartRepository.findByUserIdAndProductId(userId, productId)
             .map{
                 it.quantity
