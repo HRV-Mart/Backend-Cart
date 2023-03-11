@@ -38,4 +38,22 @@ class CartControllerTest {
             .expectNext("Product already exist in cart")
             .verifyComplete()
     }
+    @Test
+    fun `should get product quantity if product available in cart`() {
+        doReturn(Mono.just(cart))
+            .`when`(cartRepository)
+            .findByUserIdAndProductId(cart.userId, cart.productId)
+        StepVerifier.create(cartController.getProductQuantityInCart(cart.productId, cart.userId))
+            .expectNext(cart.quantity)
+            .verifyComplete()
+    }
+    @Test
+    fun `should get product quantity as 0 if product is not available in cart`() {
+        doReturn(Mono.empty<Cart>())
+            .`when`(cartRepository)
+            .findByUserIdAndProductId(cart.userId, cart.productId)
+        StepVerifier.create(cartController.getProductQuantityInCart(cart.productId, cart.userId))
+            .expectNext(0)
+            .verifyComplete()
+    }
 }
