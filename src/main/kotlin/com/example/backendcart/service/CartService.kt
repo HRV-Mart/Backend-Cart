@@ -65,7 +65,7 @@ class CartService (
     fun emptyUserCart(userId: String, response: ServerHttpResponse) =
         cartRepository.existsByUserId(userId)
             .flatMap {
-                if (it) {
+                if (! it) {
                     response.statusCode = HttpStatus.NOT_FOUND
                     Mono.just("Cart not found")
                 }
