@@ -112,5 +112,34 @@ class CartControllerTest {
             .expectNext("Product removed from cart")
             .verifyComplete()
     }
-
+    @Test
+    fun `should not delete product from cart when it is not available in cart`() {
+        doReturn(Mono.just(false))
+            .`when`(cartRepository)
+            .existsByUserIdAndProductId(cart.userId, cart.productId)
+        StepVerifier.create(cartController.deleteProductFromCart(cart.productId, cart.userId, response))
+            .expectNext("Product not found in cart")
+            .verifyComplete()
+    }
+    @Test
+    fun `should empty cart when products are available in cart`() {
+        doReturn(Mono.just(true))
+            .`when`(cartRepository)
+            .existsByUserId(cart.userId)
+        doReturn(Flux.empty<Void>())
+            .`when`(cartRepository)
+            .deleteByUserId(cart.userId)
+        StepVerifier.create(cartController.emptyCart(cart.userId, response))
+            .expectNext("Successful")
+            .verifyComplete()
+    }
+    @Test
+    fun `should not empty cart when products are not available in cart`() {
+        doReturn(Mono.just(false))
+            .`when`(cartRepository)
+            .existsByUserId(cart.userId)
+        StepVerifier.create(cartController.emptyCart(cart.userId, response))
+            .expectNext("Cart not found")
+            .verifyComplete()
+    }
 }
