@@ -1,5 +1,5 @@
 FROM openjdk:19
-ARG JAR_FILE=build/libs/Backend-Cart-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=build/libs/BackendCart-0.0.1-SNAPSHOT.jar
 ARG MONGODB_URI=mongodb://localhost:27017
 ARG APPLICATION_PORT=8082
 ENV MONGODB_URI=$MONGODB_URI
