@@ -1,6 +1,6 @@
 package com.example.backendcart.service
 
-import com.example.backendcart.model.Cart
+import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -14,7 +14,7 @@ class CartService (
     private val cartRepository: CartRepository
 )
 {
-    fun addProductToCart(cart: Cart, response: ServerHttpResponse) =
+    fun addProductToCart(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.insert(cart)
             .map {
                 response.statusCode = HttpStatus.OK
@@ -35,7 +35,7 @@ class CartService (
             .map {
                 it.productId
             }
-    fun updateProductQuantity(cart: Cart, response: ServerHttpResponse) =
+    fun updateProductQuantity(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
             .flatMap {
                 if (it) {

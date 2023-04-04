@@ -6,8 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 @CompoundIndex(name = "cart_idx", def = "{'userId': 1, 'productId': 1}",
     unique = true)
 @Document("Cart")
-data class Cart (
+data class CartRequest (
     val userId: String,
     val productId: String,
-    val quantity: Int
-)
+    val quantity: Long
+) {
+    fun getCartResponse() =
+        CartResponse(
+            productId = this.productId,
+            quantity = this.quantity
+        )
+}

@@ -1,6 +1,6 @@
 package com.example.backendcart.controller
 
-import com.example.backendcart.model.Cart
+import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
 import com.example.backendcart.service.CartService
 import org.junit.jupiter.api.Test
@@ -11,22 +11,22 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-class CartControllerTest {
+class CartRequestControllerTest {
     private val response = mock(ServerHttpResponse::class.java)
     private val cartRepository = mock(CartRepository::class.java)
     private val cartService = CartService(cartRepository)
     private val cartController = CartController(cartService)
-    private val cart = Cart(
+    private val cartRequest = CartRequest(
         userId = "User ID",
         productId = "Product ID",
         quantity = 2
     )
     @Test
     fun `should add product in cart if it is not present in cart`() {
-        doReturn(Mono.just(cart))
+        doReturn(Mono.just(cartRequest))
             .`when`(cartRepository)
-            .insert(cart)
-        StepVerifier.create(cartController.addProductInCart(cart, response))
+            .insert(cartRequest)
+        StepVerifier.create(cartController.addProductInCart(cartRequest, response))
             .expectNext("Product added to cart")
             .verifyComplete()
     }
@@ -34,51 +34,51 @@ class CartControllerTest {
     fun `should not add product in cart if it is present in cart`() {
         doReturn(Mono.error<Exception>(Exception("Product already exist in cart")))
             .`when`(cartRepository)
-            .insert(cart)
-        StepVerifier.create(cartController.addProductInCart(cart, response))
+            .insert(cartRequest)
+        StepVerifier.create(cartController.addProductInCart(cartRequest, response))
             .expectNext("Product already exist in cart")
             .verifyComplete()
     }
     @Test
     fun `should get product quantity if product available in cart`() {
-        doReturn(Mono.just(cart))
+        doReturn(Mono.just(cartRequest))
             .`when`(cartRepository)
-            .findByUserIdAndProductId(cart.userId, cart.productId)
-        StepVerifier.create(cartController.getProductQuantityInCart(cart.productId, cart.userId))
-            .expectNext(cart.quantity)
+            .findByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
+        StepVerifier.create(cartController.getProductQuantityInCart(cartRequest.productId, cartRequest.userId))
+            .expectNext(cartRequest.quantity)
             .verifyComplete()
     }
     @Test
     fun `should get product quantity as 0 if product is not available in cart`() {
-        doReturn(Mono.empty<Cart>())
+        doReturn(Mono.empty<CartRequest>())
             .`when`(cartRepository)
-            .findByUserIdAndProductId(cart.userId, cart.productId)
-        StepVerifier.create(cartController.getProductQuantityInCart(cart.productId, cart.userId))
+            .findByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
+        StepVerifier.create(cartController.getProductQuantityInCart(cartRequest.productId, cartRequest.userId))
             .expectNext(0)
             .verifyComplete()
     }
     @Test
     fun `should get productId present in user cart`() {
-        doReturn(Flux.just(cart))
+        doReturn(Flux.just(cartRequest))
             .`when`(cartRepository)
-            .findByUserId(cart.userId)
-        StepVerifier.create(cartController.getUserCart(cart.userId))
-            .expectNext(cart.productId)
+            .findByUserId(cartRequest.userId)
+        StepVerifier.create(cartController.getUserCart(cartRequest.userId))
+            .expectNext(cartRequest.productId)
             .verifyComplete()
     }
     @Test
     fun `should update product quantity when it is available in cart`() {
-        val newCart = Cart(
-            userId = cart.userId,
-            productId = cart.productId,
+        val newCart = CartRequest(
+            userId = cartRequest.userId,
+            productId = cartRequest.productId,
             quantity = 20
         )
         doReturn(Mono.just(true))
             .`when`(cartRepository)
-            .existsByUserIdAndProductId(cart.userId, cart.productId)
-        doReturn(Mono.empty<Cart>())
+            .existsByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
+        doReturn(Mono.empty<CartRequest>())
             .`when`(cartRepository)
-            .deleteByUserIdAndProductId(cart.userId, cart.productId)
+            .deleteByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
         doReturn(Mono.just(newCart))
             .`when`(cartRepository)
             .insert(newCart)
@@ -88,14 +88,14 @@ class CartControllerTest {
     }
     @Test
     fun `should not update product quantity when it is not available in cart`() {
-        val newCart = Cart(
-            userId = cart.userId,
-            productId = cart.productId,
+        val newCart = CartRequest(
+            userId = cartRequest.userId,
+            productId = cartRequest.productId,
             quantity = 20
         )
         doReturn(Mono.just(false))
             .`when`(cartRepository)
-            .existsByUserIdAndProductId(cart.userId, cart.productId)
+            .existsByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
         StepVerifier.create(cartController.updateProductQuantity(newCart, response))
             .expectNext("Product not found")
             .verifyComplete()
@@ -104,11 +104,11 @@ class CartControllerTest {
     fun `should delete product from cart when it is available in cart`() {
         doReturn(Mono.just(true))
             .`when`(cartRepository)
-            .existsByUserIdAndProductId(cart.userId, cart.productId)
+            .existsByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
         doReturn(Mono.empty<Void>())
             .`when`(cartRepository)
-            .deleteByUserIdAndProductId(cart.userId, cart.productId)
-        StepVerifier.create(cartController.deleteProductFromCart(cart.productId, cart.userId, response))
+            .deleteByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
+        StepVerifier.create(cartController.deleteProductFromCart(cartRequest.productId, cartRequest.userId, response))
             .expectNext("Product removed from cart")
             .verifyComplete()
     }
@@ -116,8 +116,8 @@ class CartControllerTest {
     fun `should not delete product from cart when it is not available in cart`() {
         doReturn(Mono.just(false))
             .`when`(cartRepository)
-            .existsByUserIdAndProductId(cart.userId, cart.productId)
-        StepVerifier.create(cartController.deleteProductFromCart(cart.productId, cart.userId, response))
+            .existsByUserIdAndProductId(cartRequest.userId, cartRequest.productId)
+        StepVerifier.create(cartController.deleteProductFromCart(cartRequest.productId, cartRequest.userId, response))
             .expectNext("Product not found in cart")
             .verifyComplete()
     }
@@ -125,11 +125,11 @@ class CartControllerTest {
     fun `should empty cart when products are available in cart`() {
         doReturn(Mono.just(true))
             .`when`(cartRepository)
-            .existsByUserId(cart.userId)
+            .existsByUserId(cartRequest.userId)
         doReturn(Flux.empty<Void>())
             .`when`(cartRepository)
-            .deleteByUserId(cart.userId)
-        StepVerifier.create(cartController.emptyCart(cart.userId, response))
+            .deleteByUserId(cartRequest.userId)
+        StepVerifier.create(cartController.emptyCart(cartRequest.userId, response))
             .expectNext("Successful")
             .verifyComplete()
     }
@@ -137,8 +137,8 @@ class CartControllerTest {
     fun `should not empty cart when products are not available in cart`() {
         doReturn(Mono.just(false))
             .`when`(cartRepository)
-            .existsByUserId(cart.userId)
-        StepVerifier.create(cartController.emptyCart(cart.userId, response))
+            .existsByUserId(cartRequest.userId)
+        StepVerifier.create(cartController.emptyCart(cartRequest.userId, response))
             .expectNext("Cart not found")
             .verifyComplete()
     }

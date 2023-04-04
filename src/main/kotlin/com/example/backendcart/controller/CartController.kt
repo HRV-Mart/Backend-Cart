@@ -1,6 +1,6 @@
 package com.example.backendcart.controller
 
-import com.example.backendcart.model.Cart
+import com.example.backendcart.model.CartRequest
 import com.example.backendcart.service.CartService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.server.reactive.ServerHttpResponse
@@ -15,7 +15,7 @@ class CartController (
 )
 {
     @PostMapping
-    fun addProductInCart(@RequestBody cart: Cart, response: ServerHttpResponse) =
+    fun addProductInCart(@RequestBody cart: CartRequest, response: ServerHttpResponse) =
         cartService.addProductToCart(cart, response)
     @GetMapping("/{userId}/{productId}")
     fun getProductQuantityInCart(
@@ -28,10 +28,10 @@ class CartController (
         cartService.getUserCart(userId)
     @PutMapping
     fun updateProductQuantity(
-        @RequestBody cart: Cart,
+        @RequestBody cartRequest: CartRequest,
         response: ServerHttpResponse
     ) =
-        cartService.updateProductQuantity(cart, response)
+        cartService.updateProductQuantity(cartRequest, response)
     @DeleteMapping("/{userId}/{productId}")
     fun deleteProductFromCart(
         @PathVariable productId: String,
