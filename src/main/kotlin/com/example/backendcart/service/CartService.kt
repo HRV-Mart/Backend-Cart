@@ -33,7 +33,7 @@ class CartService (
     fun getUserCart(userId: String) =
         cartRepository.findByUserId(userId)
             .map {
-                it.productId
+                it.getCartResponse()
             }
     fun updateProductQuantity(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
