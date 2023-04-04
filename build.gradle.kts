@@ -15,6 +15,14 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/hrv-mart/api-call")
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+		}
+	}
 }
 
 dependencies {
@@ -28,6 +36,10 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	// Detekt-formatting
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+	// API-Call
+	implementation("com.hrv.mart:api-call:0.0.1")
+	// Product
+	implementation("com.hrv.mart:product:0.0.1")
 }
 
 tasks.withType<KotlinCompile> {
