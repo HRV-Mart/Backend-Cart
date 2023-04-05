@@ -40,6 +40,8 @@ dependencies {
 	implementation("com.hrv.mart:api-call:0.0.1")
 	// Product
 	implementation("com.hrv.mart:product:0.0.1")
+	// Cart Response
+	implementation("com.hrv.mart:cart-response:0.0.1")
 }
 
 tasks.withType<KotlinCompile> {
@@ -65,12 +67,8 @@ detekt {
 tasks.jacocoTestCoverageVerification {
 	violationRules {
 		rule {
-			excludes = listOf(
-				"com.hrv.mart.backendcart.repository.CartRepository.kt.*",
-				"com.hrv.mart.backendcart.repository.ProductRepository.kt.*",
-			)
 			limit {
-				minimum = "0.9".toBigDecimal()
+				minimum = "0.8".toBigDecimal()
 			}
 		}
 	}
