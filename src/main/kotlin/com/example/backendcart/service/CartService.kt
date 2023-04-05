@@ -2,6 +2,7 @@ package com.example.backendcart.service
 
 import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
+import com.example.backendcart.repository.ProductRepository
 import com.hrv.mart.apicall.APICaller
 import com.hrv.mart.product.Product
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +17,7 @@ class CartService (
     @Autowired
     private val cartRepository: CartRepository,
     @Autowired
-    private val webClientBuilder: WebClient.Builder
+    private val productRepository: ProductRepository
 )
 {
     fun addProductToCart(cart: CartRequest, response: ServerHttpResponse) =
@@ -82,7 +83,7 @@ class CartService (
     fun getCartCost(userId: String, response: ServerHttpResponse) =
         getUserCart(userId)
             .flatMap { cart->
-                getCostOfProduct(cart.productId, response)
+                productRepository.getCostOfProduct(cart.productId)
                     .map {price ->
                         cart.quantity * price
                     }
@@ -90,15 +91,8 @@ class CartService (
             .reduce{ x, y ->
                 x + y
             }
-            .defaultIfEmpty(0)
-    private fun getCostOfProduct(productId: String, response: ServerHttpResponse) =
-        APICaller(webClientBuilder)
-            .getData("http://localhost:8081/product/${productId}", Product::class.java)
-            .map {
-                it.price
-            }
-            .onErrorMap {
+            .onErrorResume {
                 response.statusCode = HttpStatus.NOT_FOUND
-                it
+                Mono.empty()
             }
 }
