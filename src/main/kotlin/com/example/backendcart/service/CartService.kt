@@ -2,8 +2,10 @@ package com.example.backendcart.service
 
 import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
+import com.example.backendcart.repository.OrderRepository
 import com.example.backendcart.repository.ProductRepository
 import com.hrv.mart.apicall.APICaller
+import com.hrv.mart.orderlibrary.model.OrderRequest
 import com.hrv.mart.product.Product
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,7 +19,9 @@ class CartService (
     @Autowired
     private val cartRepository: CartRepository,
     @Autowired
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    @Autowired
+    private val orderRepository: OrderRepository
 )
 {
     fun addProductToCart(cart: CartRequest, response: ServerHttpResponse) =
@@ -40,6 +44,27 @@ class CartService (
         cartRepository.findByUserId(userId)
             .map {
                 it.getCartResponse()
+            }
+    fun purchaseAllItems(userId: String, response: ServerHttpResponse) =
+        getUserCart(userId)
+            .collectList()
+            .flatMap {cart ->
+                getCartCost(userId, response)
+                    .flatMap { cost ->
+                        val order = OrderRequest(
+                            userId = userId,
+                            products = cart,
+                            price = cost
+                        )
+                        response.statusCode = HttpStatus.OK
+                        print(order)
+                        print(cost)
+                        orderRepository.createOrder(order)
+                    }
+            }
+//            .then(emptyUserCart(userId, response))
+            .flatMap{
+                Mono.just("Order purchase successfully")
             }
     fun updateProductQuantity(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
