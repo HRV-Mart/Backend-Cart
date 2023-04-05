@@ -1,7 +1,9 @@
 package com.example.backendcart.controller
 
 import com.example.backendcart.model.CartRequest
+import com.example.backendcart.model.CartResponse
 import com.example.backendcart.repository.CartRepository
+import com.example.backendcart.repository.ProductRepository
 import com.example.backendcart.service.CartService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doReturn
@@ -14,7 +16,8 @@ import reactor.test.StepVerifier
 class CartRequestControllerTest {
     private val response = mock(ServerHttpResponse::class.java)
     private val cartRepository = mock(CartRepository::class.java)
-    private val cartService = CartService(cartRepository)
+    private val productRepository = mock(ProductRepository::class.java)
+    private val cartService = CartService(cartRepository, productRepository)
     private val cartController = CartController(cartService)
     private val cartRequest = CartRequest(
         userId = "User ID",
@@ -58,12 +61,12 @@ class CartRequestControllerTest {
             .verifyComplete()
     }
     @Test
-    fun `should get productId present in user cart`() {
+    fun `should get product and prouduct quantity in user cart`() {
         doReturn(Flux.just(cartRequest))
             .`when`(cartRepository)
             .findByUserId(cartRequest.userId)
         StepVerifier.create(cartController.getUserCart(cartRequest.userId))
-            .expectNext(cartRequest.productId)
+            .expectNext(cartRequest.getCartResponse())
             .verifyComplete()
     }
     @Test
@@ -140,6 +143,61 @@ class CartRequestControllerTest {
             .existsByUserId(cartRequest.userId)
         StepVerifier.create(cartController.emptyCart(cartRequest.userId, response))
             .expectNext("Cart not found")
+            .verifyComplete()
+    }
+    @Test
+    fun `should return cost of cart if it is not empty`() {
+        val userId = "userId"
+        val productId = listOf("product1", "product2", "product3")
+        val quantity = listOf(1L, 2L, 3L)
+        val price = listOf(10L, 20L, 30L)
+
+        val expectedPrice = quantity.zip(price) {a, b -> a*b}.sum()
+        val cartList = mutableListOf<CartRequest>()
+        for (i in productId.indices) {
+            cartList.add(CartRequest(
+                productId = productId[i],
+                quantity = quantity[i],
+                userId = userId
+            ))
+            doReturn(Mono.just(price[i]))
+                .`when`(productRepository)
+                .getCostOfProduct(productId[i])
+        }
+        val cart = Flux.just(*cartList.toTypedArray())
+
+        doReturn(cart)
+            .`when`(cartRepository)
+            .findByUserId(userId)
+
+        StepVerifier.create(cartController.computeCost(userId, response))
+            .expectNext(expectedPrice)
+            .verifyComplete()
+    }
+    @Test
+    fun `should return nothing if product is not available`() {
+        val userId = "userId"
+        val productId = listOf("product1", "product2", "product3")
+        val quantity = listOf(1L, 2L, 3L)
+
+        val cartList = mutableListOf<CartRequest>()
+        for (i in productId.indices) {
+            cartList.add(CartRequest(
+                productId = productId[i],
+                quantity = quantity[i],
+                userId = userId
+            ))
+            doReturn(Mono.error<Exception>(Exception("Product not available")))
+                .`when`(productRepository)
+                .getCostOfProduct(productId[i])
+        }
+        val cart = Flux.just(*cartList.toTypedArray())
+
+        doReturn(cart)
+            .`when`(cartRepository)
+            .findByUserId(userId)
+
+        StepVerifier.create(cartController.computeCost(userId, response))
             .verifyComplete()
     }
 }
