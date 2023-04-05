@@ -131,7 +131,7 @@ class CartRequestControllerTest {
         doReturn(Mono.just(true))
             .`when`(cartRepository)
             .existsByUserId(cartRequest.userId)
-        doReturn(Flux.empty<Void>())
+        doReturn(Mono.empty<Void>())
             .`when`(cartRepository)
             .deleteAllByUserId(cartRequest.userId)
         StepVerifier.create(cartController.emptyCart(cartRequest.userId, response))
