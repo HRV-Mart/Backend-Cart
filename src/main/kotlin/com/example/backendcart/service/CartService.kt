@@ -57,12 +57,10 @@ class CartService (
                             price = cost
                         )
                         response.statusCode = HttpStatus.OK
-                        print(order)
-                        print(cost)
                         orderRepository.createOrder(order)
                     }
             }
-//            .then(emptyUserCart(userId, response))
+            .then(emptyUserCart(userId, response))
             .flatMap{
                 Mono.just("Order purchase successfully")
             }
@@ -101,7 +99,7 @@ class CartService (
                     Mono.just("Cart not found")
                 }
                 else {
-                    cartRepository.deleteByUserId(userId)
+                    cartRepository.deleteAllByUserId(userId)
                         .then(Mono.just("Successful"))
                 }
             }
