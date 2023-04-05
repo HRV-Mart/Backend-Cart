@@ -26,6 +26,9 @@ class CartController (
     @GetMapping("/{userId}")
     fun getUserCart(@PathVariable userId: String) =
         cartService.getUserCart(userId)
+    @GetMapping("/purchase/{userId}")
+    fun purchaseAllItemsInCart(@PathVariable userId: String, response: ServerHttpResponse) =
+        cartService.purchaseAllItems(userId, response)
     @GetMapping("/computeCost/{userId}")
     fun computeCost(@PathVariable userId: String, response: ServerHttpResponse) =
         cartService.getCartCost(userId, response)
