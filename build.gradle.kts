@@ -66,7 +66,8 @@ tasks.jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			excludes = listOf(
-				"com.hrv.mart.user.repository.UserRepository.kt.*"
+				"com.hrv.mart.backendcart.repository.CartRepository.kt.*",
+				"com.hrv.mart.backendcart.repository.ProductRepository.kt.*",
 			)
 			limit {
 				minimum = "0.9".toBigDecimal()
