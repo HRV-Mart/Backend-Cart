@@ -1,20 +1,26 @@
 package com.example.backendcart.service
 
-import com.example.backendcart.model.Cart
+import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
+import com.example.backendcart.repository.ProductRepository
+import com.hrv.mart.apicall.APICaller
+import com.hrv.mart.product.Product
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Service
 class CartService (
     @Autowired
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    @Autowired
+    private val productRepository: ProductRepository
 )
 {
-    fun addProductToCart(cart: Cart, response: ServerHttpResponse) =
+    fun addProductToCart(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.insert(cart)
             .map {
                 response.statusCode = HttpStatus.OK
@@ -33,9 +39,9 @@ class CartService (
     fun getUserCart(userId: String) =
         cartRepository.findByUserId(userId)
             .map {
-                it.productId
+                it.getCartResponse()
             }
-    fun updateProductQuantity(cart: Cart, response: ServerHttpResponse) =
+    fun updateProductQuantity(cart: CartRequest, response: ServerHttpResponse) =
         cartRepository.existsByUserIdAndProductId(cart.userId, cart.productId)
             .flatMap {
                 if (it) {
@@ -73,5 +79,20 @@ class CartService (
                     cartRepository.deleteByUserId(userId)
                         .then(Mono.just("Successful"))
                 }
+            }
+    fun getCartCost(userId: String, response: ServerHttpResponse) =
+        getUserCart(userId)
+            .flatMap { cart->
+                productRepository.getCostOfProduct(cart.productId)
+                    .map {price ->
+                        cart.quantity * price
+                    }
+            }
+            .reduce{ x, y ->
+                x + y
+            }
+            .onErrorResume {
+                response.statusCode = HttpStatus.NOT_FOUND
+                Mono.empty()
             }
 }
