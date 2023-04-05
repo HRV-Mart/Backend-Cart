@@ -133,7 +133,7 @@ class CartRequestControllerTest {
             .existsByUserId(cartRequest.userId)
         doReturn(Flux.empty<Void>())
             .`when`(cartRepository)
-            .deleteByUserId(cartRequest.userId)
+            .deleteAllByUserId(cartRequest.userId)
         StepVerifier.create(cartController.emptyCart(cartRequest.userId, response))
             .expectNext("Successful")
             .verifyComplete()
