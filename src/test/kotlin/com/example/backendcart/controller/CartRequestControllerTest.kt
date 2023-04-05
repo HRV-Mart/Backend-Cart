@@ -1,7 +1,6 @@
 package com.example.backendcart.controller
 
 import com.example.backendcart.model.CartRequest
-import com.example.backendcart.model.CartResponse
 import com.example.backendcart.repository.CartRepository
 import com.example.backendcart.repository.ProductRepository
 import com.example.backendcart.service.CartService

@@ -1,5 +1,6 @@
 package com.example.backendcart.model
 
+import com.hrv.mart.cartresponse.model.CartResponse
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
 
