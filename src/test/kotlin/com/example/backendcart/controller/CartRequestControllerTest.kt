@@ -2,8 +2,10 @@ package com.example.backendcart.controller
 
 import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
+import com.example.backendcart.repository.OrderRepository
 import com.example.backendcart.repository.ProductRepository
 import com.example.backendcart.service.CartService
+import com.hrv.mart.orderlibrary.model.OrderRequest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
@@ -16,7 +18,8 @@ class CartRequestControllerTest {
     private val response = mock(ServerHttpResponse::class.java)
     private val cartRepository = mock(CartRepository::class.java)
     private val productRepository = mock(ProductRepository::class.java)
-    private val cartService = CartService(cartRepository, productRepository)
+    private val orderRepository = mock(OrderRepository::class.java)
+    private val cartService = CartService(cartRepository, productRepository, orderRepository)
     private val cartController = CartController(cartService)
     private val cartRequest = CartRequest(
         userId = "User ID",
