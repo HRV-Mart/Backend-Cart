@@ -40,6 +40,8 @@ dependencies {
 	implementation("com.hrv.mart:api-call:0.0.1")
 	// Product
 	implementation("com.hrv.mart:product:0.0.1")
+	// Cart Response
+	implementation("com.hrv.mart:cart-response:0.0.1")
 }
 
 tasks.withType<KotlinCompile> {
