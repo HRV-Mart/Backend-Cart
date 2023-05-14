@@ -118,4 +118,5 @@ class CartService (
                 response.statusCode = HttpStatus.NOT_FOUND
                 Mono.empty()
             }
+            .defaultIfEmpty(0)
 }
