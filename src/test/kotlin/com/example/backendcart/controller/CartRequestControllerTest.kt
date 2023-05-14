@@ -177,7 +177,7 @@ class CartRequestControllerTest {
             .verifyComplete()
     }
     @Test
-    fun `should return nothing if product is not available`() {
+    fun `should return 0 as cost of cart if product is not available`() {
         val userId = "userId"
         val productId = listOf("product1", "product2", "product3")
         val quantity = listOf(1L, 2L, 3L)
@@ -200,6 +200,7 @@ class CartRequestControllerTest {
             .findByUserId(userId)
 
         StepVerifier.create(cartController.computeCost(userId, response))
+            .expectNext(0)
             .verifyComplete()
     }
 }
