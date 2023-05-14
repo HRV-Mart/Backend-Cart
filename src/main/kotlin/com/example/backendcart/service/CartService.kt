@@ -62,7 +62,7 @@ class CartService (
                         orderRepository.createOrder(order)
                     }
             }
-//            .then(emptyUserCart(userId, response))
+            .then(emptyUserCart(userId, response))
             .flatMap{
                 Mono.just("Order purchase successfully")
             }
@@ -71,9 +71,7 @@ class CartService (
             .flatMap {
                 if (it) {
                     cartRepository.deleteByUserIdAndProductId(cart.userId, cart.productId)
-                        .flatMap {
-                            cartRepository.insert(cart)
-                        }
+                        .then(Mono.defer { cartRepository.insert(cart) })
                         .then(Mono.just("Product quantity updated"))
                 }
                 else {
@@ -101,7 +99,7 @@ class CartService (
                     Mono.just("Cart not found")
                 }
                 else {
-                    cartRepository.deleteByUserId(userId)
+                    cartRepository.deleteAllByUserId(userId)
                         .then(Mono.just("Successful"))
                 }
             }
