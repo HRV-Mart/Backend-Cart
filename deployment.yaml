@@ -31,6 +31,11 @@ spec:
                 configMapKeyRef:
                   name: config-map
                   key: kafka-url
+            - name: PRODUCT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: product-url
 ---
 apiVersion: v1
 kind: Service
