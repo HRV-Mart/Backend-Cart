@@ -36,10 +36,8 @@ dependencies {
 	testImplementation("io.projectreactor:reactor-test")
 	// Detekt-formatting
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
-	// API-Call
-	implementation("com.hrv.mart:api-call:0.0.1")
 	// Product
-	implementation("com.hrv.mart:product:0.0.1")
+	implementation("com.hrv.mart:product:0.0.3")
 	// Cart Response
 	implementation("com.hrv.mart:cart-response:0.0.1")
 	// Order Library

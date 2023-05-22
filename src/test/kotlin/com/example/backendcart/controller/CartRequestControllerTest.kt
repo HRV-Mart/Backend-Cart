@@ -3,9 +3,8 @@ package com.example.backendcart.controller
 import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
 import com.example.backendcart.repository.OrderRepository
-import com.example.backendcart.repository.ProductRepository
 import com.example.backendcart.service.CartService
-import com.hrv.mart.orderlibrary.model.OrderRequest
+import com.hrv.mart.product.repository.ProductRepository
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
@@ -164,7 +163,7 @@ class CartRequestControllerTest {
             ))
             doReturn(Mono.just(price[i]))
                 .`when`(productRepository)
-                .getCostOfProduct(productId[i])
+                .getCostOfProductByProductId(productId[i])
         }
         val cart = Flux.just(*cartList.toTypedArray())
 
@@ -191,7 +190,7 @@ class CartRequestControllerTest {
             ))
             doReturn(Mono.error<Exception>(Exception("Product not available")))
                 .`when`(productRepository)
-                .getCostOfProduct(productId[i])
+                .getCostOfProductByProductId(productId[i])
         }
         val cart = Flux.just(*cartList.toTypedArray())
 
