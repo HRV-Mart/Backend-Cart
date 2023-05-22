@@ -3,15 +3,12 @@ package com.example.backendcart.service
 import com.example.backendcart.model.CartRequest
 import com.example.backendcart.repository.CartRepository
 import com.example.backendcart.repository.OrderRepository
-import com.example.backendcart.repository.ProductRepository
-import com.hrv.mart.apicall.APICaller
 import com.hrv.mart.orderlibrary.model.OrderRequest
-import com.hrv.mart.product.Product
+import com.hrv.mart.product.repository.ProductRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 @Service
@@ -106,7 +103,7 @@ class CartService (
     fun getCartCost(userId: String, response: ServerHttpResponse) =
         getUserCart(userId)
             .flatMap { cart->
-                productRepository.getCostOfProduct(cart.productId)
+                productRepository.getCostOfProductByProductId(cart.productId)
                     .map {price ->
                         cart.quantity * price
                     }
