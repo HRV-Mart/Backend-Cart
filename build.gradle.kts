@@ -37,7 +37,7 @@ dependencies {
 	// Detekt-formatting
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
 	// Product
-	implementation("com.hrv.mart:product:0.0.3")
+	implementation("com.hrv.mart:product:0.0.5")
 	// Cart Response
 	implementation("com.hrv.mart:cart-response:0.0.1")
 	// Order Library
