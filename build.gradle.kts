@@ -41,7 +41,7 @@ dependencies {
 	// Cart Response
 	implementation("com.hrv.mart:cart-response:0.0.1")
 	// Order Library
-	implementation("com.hrv.mart:order-library:0.0.4")
+	implementation("com.hrv.mart:order-library:0.0.6")
 	// Kafka
 	implementation("io.projectreactor.kafka:reactor-kafka")
 	implementation("org.springframework.kafka:spring-kafka")
