@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: ./build/libs/${{ github.event.repository.name }}-0.0.1-SNAPSHOT.jar
+          path: ./build/libs/BackendCart-0.0.1-SNAPSHOT.jar
   docker-build:
     name: Docker Build
     runs-on: ubuntu-latest
