@@ -35,7 +35,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	// Detekt-formatting
-	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 	// Product
 	implementation("com.hrv.mart:product:0.0.6")
 	// Cart Response
