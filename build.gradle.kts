@@ -6,7 +6,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.23.1"
 	id("jacoco")// This is to use Jacoco for coverage testing
 	kotlin("jvm") version "1.9.0"
-	kotlin("plugin.spring") version "1.8.22"
+	kotlin("plugin.spring") version "1.9.0"
 }
 
 group = "com.example"
@@ -63,7 +63,7 @@ tasks.withType<Test> {
 /*
 * detekt configs*/
 detekt {
-	toolVersion = "1.22.0"
+	toolVersion = "1.23.1"
 	config = files("config/detekt/detekt.yml")
 }
 /*
