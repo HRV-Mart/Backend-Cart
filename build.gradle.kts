@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.1.2"
 	id("io.spring.dependency-management") version "1.1.2"
-	id("io.gitlab.arturbosch.detekt") version "1.23.0"
+	id("io.gitlab.arturbosch.detekt") version "1.23.1"
 	id("jacoco")// This is to use Jacoco for coverage testing
 	kotlin("jvm") version "1.9.0"
 	kotlin("plugin.spring") version "1.8.22"
@@ -35,7 +35,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	// Detekt-formatting
-	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 	// Product
 	implementation("com.hrv.mart:product:0.0.6")
 	// Cart Response
